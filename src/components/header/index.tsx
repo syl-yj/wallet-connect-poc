@@ -1,18 +1,68 @@
-import { memo } from "react";
+import { memo, useCallback, useState } from "react";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
 
-import { REACT_LOGO } from "@assets/index";
+import { INJECTED_CONNECTOR, WALLET_CONNECT } from "web3.utils";
 import "./header.scss";
 
 function Header() {
+  const { activate, account, deactivate, library } = useWeb3React<Web3Provider>();
+
+  const [sign, setSign] = useState<string>();
+
+  const connectInjectedWallet = useCallback(async () => {
+    await activate(INJECTED_CONNECTOR);
+  }, [activate]);
+  const connectWalletConnect = useCallback(async () => {
+    await activate(WALLET_CONNECT);
+  }, [activate]);
+
+  const getSignByCurrentLibrary = useCallback(async () => {
+    if (library) {
+      try {
+        const signature = await library.getSigner().signMessage("SIGN THIS MESSAGE!");
+        setSign(signature);
+      } catch (error) {
+        const castedError = error as { code: number; message: string };
+        setSign(`\nERROR\n${castedError?.code} : ${castedError.message}`);
+      }
+    }
+  }, [library]);
+
+  if (account) {
+    return (
+      <header className="App-header">
+        <div>CURRENT WALLET: {account}</div>
+        <div className="App-link">
+          Signature
+          <br />
+          {sign}
+        </div>
+
+        {sign ? (
+          <button onClick={() => setSign(undefined)} type="button">
+            REMOVE SIGN
+          </button>
+        ) : (
+          <button onClick={getSignByCurrentLibrary} type="button">
+            GET SIGN
+          </button>
+        )}
+        <button onClick={deactivate} type="button">
+          DISCONNECT WALLET
+        </button>
+      </header>
+    );
+  }
+
   return (
     <header className="App-header">
-      <img src={REACT_LOGO} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-        Learn React
-      </a>
+      <button onClick={connectInjectedWallet} type="button">
+        CONNECT METAMASK
+      </button>
+      <button onClick={connectWalletConnect} type="button">
+        CONNECT WALLETCONNECT
+      </button>
     </header>
   );
 }

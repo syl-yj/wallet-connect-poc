@@ -48,6 +48,7 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "no-console": ["warn", { allow: ["warn", "error"] }],
+    "import/no-extraneous-dependencies": "off",
     "import/no-named-as-default": "off",
     "import/order": [
       "warn",

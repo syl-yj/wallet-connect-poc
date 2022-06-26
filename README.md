@@ -1,4 +1,4 @@
-# CRA-TS-CRACO-TEMPLATE
+# WALLET-CONNECT-POC
 
 Boilerplate with Create-React-App using typescript, craco, and several eslint/prettier settings.
 

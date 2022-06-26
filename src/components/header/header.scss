@@ -24,6 +24,11 @@
 
 .App-link {
   color: $skyblue;
+  font-size: calc(1rem);
+  margin: 3rem;
+  width: 80vw;
+  white-space: pre-line;
+  word-break: break-all;
 }
 
 @keyframes App-logo-spin {
