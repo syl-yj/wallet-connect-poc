@@ -1,6 +1,9 @@
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
 import { memo, useCallback, useState } from "react";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
+import WalletConnectProvider from "@walletconnect/ethereum-provider";
 import { useWeb3React } from "@web3-react/core";
 
 import ERC20_ABI from "@constants/erc20.abi.json";
@@ -17,6 +20,26 @@ function Header() {
   }, [activate]);
   const connectWalletConnect = useCallback(async () => {
     await activate(WALLET_CONNECT);
+  }, [activate]);
+
+  const connectAndSignWalletConnect = useCallback(async () => {
+    try {
+      await activate(WALLET_CONNECT);
+
+      const address = await WALLET_CONNECT.getAccount();
+      console.log({ address });
+      if (!address) return;
+
+      const walletConnectProvider: WalletConnectProvider = await WALLET_CONNECT.getProvider();
+      console.log({ walletConnectProvider });
+      if (!walletConnectProvider) return;
+
+      const signature = await walletConnectProvider.connector.signMessage(["sign this?"]);
+      console.log({ signature });
+      setSign(signature);
+    } catch (error) {
+      alert(error);
+    }
   }, [activate]);
 
   const getSignByCurrentLibrary = useCallback(async () => {
@@ -83,6 +106,9 @@ function Header() {
       </button>
       <button onClick={connectWalletConnect} type="button">
         CONNECT WALLETCONNECT
+      </button>
+      <button onClick={connectAndSignWalletConnect} type="button">
+        CONNECT & SIGN WALLETCONNECT
       </button>
     </header>
   );
