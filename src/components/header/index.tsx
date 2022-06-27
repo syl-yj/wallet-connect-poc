@@ -1,7 +1,9 @@
 import { memo, useCallback, useState } from "react";
+import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 
+import ERC20_ABI from "@constants/erc20.abi.json";
 import { INJECTED_CONNECTOR, WALLET_CONNECT } from "web3.utils";
 import "./header.scss";
 
@@ -29,6 +31,21 @@ function Header() {
     }
   }, [library]);
 
+  const sendTransaction = async () => {
+    if (!library) {
+      return;
+    }
+    try {
+      const erc20Contract = new ethers.Contract(ERC20_ABI.address, ERC20_ABI.abi, library.getSigner());
+      const transaction = await erc20Contract.approve("0x402b970d3f5Cc39f62088075c7Fa200D1f2DfA22", "0x1");
+      // eslint-disable-next-line
+      return transaction.hash;
+    } catch (error) {
+      alert(JSON.stringify(error));
+      console.log(error);
+    }
+  };
+
   if (account) {
     return (
       <header className="App-header">
@@ -48,6 +65,10 @@ function Header() {
             GET SIGN
           </button>
         )}
+
+        <button onClick={sendTransaction} type="button">
+          SEND TX
+        </button>
         <button onClick={deactivate} type="button">
           DISCONNECT WALLET
         </button>
