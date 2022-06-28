@@ -34,8 +34,9 @@ function Header() {
       console.log({ walletConnectProvider });
       if (!walletConnectProvider) return;
 
-      const signature = await walletConnectProvider.connector.signMessage(["sign this?"]);
-      console.log({ signature });
+      const provider = new Web3Provider(walletConnectProvider);
+      const signer = provider.getSigner();
+      const signature = await signer.signMessage("SIGN THIS MESSAGE!");
       setSign(signature);
     } catch (error) {
       alert(error);
