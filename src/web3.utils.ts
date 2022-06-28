@@ -15,7 +15,7 @@ export const INJECTED_CONNECTOR = new InjectedConnector({
 
 export const WALLET_CONNECT = new WalletConnectConnector({
   rpc: {
-    1: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    1: `https://rpc.ankr.com/eth`,
   },
   qrcode: true,
 });
